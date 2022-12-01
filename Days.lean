@@ -60,7 +60,7 @@ def ProblemNumber.ofNat? (n: Nat) :=
 def ProblemNumber.ofNat! (n: Nat) := 
   match ProblemNumber.ofNat? n with
   | some n => n
-  | none => panic! "Can't parse problem number"
+  | none => panic! s!"Can't parse problem number from '{n}'; it should be between 1 and 25"
 
 structure Problem :=
   define ::
