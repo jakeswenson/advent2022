@@ -1,18 +1,33 @@
 import Cli
+import Advent22
 
 open Cli
+open Days
+
+
 
 def runDayCmd (p : Parsed) : IO UInt32 := do
-  let day   : Nat       := p.positionalArg! "day" |>.as! Nat
-  IO.println <| s!"Running day: {day}"
+  let day: ProblemNumber := p.positionalArg! "day" |>.as! Nat |> ProblemNumber.of
+
+  let problem := List.find? (fun (p: Days.Problem) => p.day == day) Advent22.days
+
+  IO.println s!"Running day: {day}"
+  
+  let currentDir ← IO.currentDir
+  let dayDir: System.FilePath := currentDir / s!"problems/{day}"
+  let inputPath: System.FilePath := dayDir / "problem.txt"
+
+  match problem with 
+  | some problem => 
+    let problemInput ← IO.FS.readFile inputPath
+    let input: Days.Input := Days.Input.mk problemInput
+    problem.run input
+  | none => IO.println s!"Unable to find problem for day {day}... has it be added to the days list?"
+  
   return 0
 
-def padDay (day: Nat) : String := 
-  if day < 10 then s!"0{day}" else s!"{day}"
-
-
 def makeProblem (p : Parsed) : IO UInt32 := do
-  let day: String := p.positionalArg! "day" |>.as! Nat |> padDay
+  let day: String := p.positionalArg! "day" |>.as! Nat |> ProblemNumber.ofNat! |> Problem.padDay
   let currentDir ← IO.currentDir
   let dayDir: System.FilePath := currentDir / s!"problems/{day}"
 
@@ -40,11 +55,11 @@ def day := `[Cli|
     day: Nat; "The day to run"
 ]
 
-def problem := `[Cli|
-  problem VIA makeProblem; "Generates the problem for a day"
+def createProblem := `[Cli|
+  create VIA makeProblem; "Generates the problem for a day"
 
   ARGS:
-    day: Nat; "The day to run"
+    day: Nat; "The day to create"
 ]
 
 namespace Advent.CLI
@@ -59,7 +74,7 @@ def adventCli : Cmd := `[Cli|
 
   SUBCOMMANDS:
     day;
-    problem
+    createProblem
 
   EXTENSIONS:
     author "jakeswenson"

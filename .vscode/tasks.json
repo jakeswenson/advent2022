@@ -6,7 +6,7 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "/Users/jakes/.elan/bin/lake build",
+            "command": "~/.elan/bin/lake build",
             "problemMatcher": [],
             "group": {
                 "kind": "build",

@@ -3,26 +3,64 @@ import Days
 namespace Days.Day01
 open Days
 
+structure Elf :=
+  carrying: List Int
+
 def part1 (input: Input) : Int := 
-  countIncreases none nums
+  elfCarryingTheMost.get!
   where 
-    nums := List.map (String.toInt!) input.lines
-    countIncreases (last: Option Int) (nums: List Int): Nat := 
-      match last, nums with 
-      | _, [] => 0
-      | none, x::xs => countIncreases (some x) xs
-      | some last, x::xs => countIncreases (some x) xs + if x > last then 1 else 0
+    elves: List Elf := input.text.splitOn "\n\n" 
+        |> List.map (fun x => x.splitOn "\n" |> List.map String.toInt!)
+        |> List.map Elf.mk
+    countCarrying (elf : Elf) : Int := 
+      elf.carrying
+      |> List.foldl (init:=0) (·+·)
+
+    elfCarryingTheMost := 
+      List.map countCarrying elves
+      |> List.maximum?
+
+def part2 (input: Input) : Int := 
+  top3Total
+  where 
+    elves: List Elf := input.text.splitOn "\n\n" 
+        |> List.map (fun x => x.splitOn "\n" |> List.map String.toInt!)
+        |> List.map Elf.mk
+
+    countCarrying (elf : Elf) : Int := 
+      elf.carrying
+      |> List.foldl (init:=0) (·+·)
+
+    top3Elves : Option $ Int × Int × Int := 
+      List.map countCarrying elves
+      |> List.foldl (init := none) (fun 
+      | none, elf => (elf, elf, elf)
+      | some (top₁, top₂, top₃), elf => 
+        if elf > top₁ then (elf, top₁, top₂)
+        else if elf > top₂ then (top₁, elf, top₂)
+        else if elf > top₃ then (top₁, top₂, elf)
+        else (top₁, top₂, top₃)
+      )
+    top3Total := let (top₁, top₂, top₃) := top3Elves.get!; top₁ + top₂ + top₃
 
 
-def solution := Problem.define 1 part1
+def solution := Problem.define 1 part1 part2
 
-#eval 7 == Problem.test solution "199
-200
-208
-210
-200
-207
-240
-269
-260
-263"
+def sample := "1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000"
+
+
+#eval 24000 == Problem.testPart₁ solution sample
+#eval 45000 == Problem.testPart₂ solution sample
