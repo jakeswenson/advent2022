@@ -4,8 +4,6 @@ import Advent22
 open Cli
 open Days
 
-
-
 def runDayCmd (p : Parsed) : IO UInt32 := do
   let day: ProblemNumber := p.positionalArg! "day" |>.as! Nat |> ProblemNumber.of
 
