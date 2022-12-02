@@ -82,7 +82,7 @@ In this example, if you were to follow the strategy guide, you would get a total
 
 What would your total score be if everything goes exactly according to your strategy guide?
 -/
-def part1 (input: Input) : Int := 
+def part₁ (input: Input) : Int := 
   scoreForPerfectPlay 
   where
     parseStratLine (line: Input) := 
@@ -143,7 +143,7 @@ Now that you're correctly decrypting the ultra top secret strategy guide, you wo
 
 Following the Elf's instructions for the second column, what would your total score be if everything goes exactly according to your strategy guide?
 -/
-def part2 (input: Input) : Int := 
+def part₂ (input: Input) : Int := 
   scorePlannedPlay
   where
     parseOutcomeLine (line: Input) := 
@@ -167,7 +167,7 @@ def part2 (input: Input) : Int :=
       |> .map scoreRound
       |> sum
 
-def solution : Problem := ⟨ 2, part1, part2 ⟩ 
+def solution : Problem := ⟨ 2, part₁, part₂ ⟩ 
 
 def sample := "A Y
 B X
