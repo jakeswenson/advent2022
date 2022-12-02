@@ -94,10 +94,14 @@ def Problem.run (p:  Problem) (i: Input) : IO Unit := do
 def Input.lines : (@& Input) → List String
   | ⟨s⟩ => String.splitOn s "\n"
 
+def Input.splitOn : (@& Input) → String → List String
+  | ⟨s⟩, sep => String.splitOn s sep
+
+def String.lines : (@& String) → List String
+  | s => String.splitOn s "\n"
 
 def Problem.testPart₁ (p: Problem) (input: String) : Int := 
   p.part1 (Input.mk input)
-
 
 def Problem.testPart₂ (p: Problem) (input: String) : Int := 
   p.part2.map runPart2
