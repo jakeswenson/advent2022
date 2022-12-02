@@ -1,21 +1,21 @@
 import Days
+import Days.Common
 
 namespace Days.Day01
 open Days
+open Common
+
+def elfGroupSeperator := "\n\n"
 
 structure Elf :=
   carrying: List Int
 
 def Elf.fromInput (input: Input) : List Elf :=
-  input.splitOn "\n\n" 
-    |> List.map (fun x => String.lines x |> List.map String.toInt!)
+  input.splitOn elfGroupSeperator 
+    |> List.map (·.intLines)
     |> List.map Elf.mk
 
-def sum [Add α] [Inhabited α] (items: List α) : α :=
-  List.foldl (init:=Inhabited.default) (·+·) items
-
-
-/-
+/--
 Santa's reindeer typically eat regular reindeer food, but they need a lot of magical energy to deliver presents on Christmas. For that, their favorite snack is a special type of star fruit that only grows deep in the jungle. The Elves have brought you on their annual expedition to the grove where the fruit grows.
 
 To supply enough magical energy, the expedition needs to retrieve a minimum of fifty stars by December 25th. Although the Elves assure you that the grove has plenty of fruit, you decide to grab any fruit you see along the way, just in case.
@@ -62,7 +62,7 @@ def part1 (input: Input) : Int :=
       List.map countCarrying elves
       |> List.maximum?
 
-/-
+/--
 By the time you calculate the answer to the Elves' question, they've already realized that the Elf carrying the most Calories of food might eventually run out of snacks.
 
 To avoid this unacceptable situation, the Elves would instead like to know the total Calories carried by the top three Elves carrying the most Calories. That way, even if one of those Elves runs out of snacks, they still have two backups.
@@ -78,7 +78,7 @@ def part2 (input: Input) : Int :=
     countCarrying (elf : Elf) : Int := sum elf.carrying
 
     top3Elves : Option $ Int × Int × Int := 
-      List.map countCarrying elves
+      .map countCarrying elves
       |> List.foldl (init := none) (fun 
       | none, elf => (elf, elf, elf)
       | some (top₁, top₂, top₃), elf => 
@@ -111,5 +111,5 @@ def sample := "1000
 10000"
 
 
-#eval 24000 == Problem.testPart₁ solution sample
-#eval 45000 == Problem.testPart₂ solution sample
+#eval testPart₁ (expect:=24000) solution sample
+#eval testPart₂ (expect:=45000) solution sample

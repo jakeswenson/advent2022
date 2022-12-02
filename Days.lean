@@ -1,8 +1,29 @@
 namespace Days
 
 structure Input := 
-  text: String 
+  text: String
 
+instance : ToString Input where
+  toString := (·.text)
+
+def Input.lines : (@& Input) → List Input
+  | ⟨s⟩ => String.splitOn s "\n" 
+      |> .map Input.mk
+
+def Input.toInt? : (@& Input) → Option Int
+  | ⟨s⟩ => s.toInt?
+
+def Input.intLines (i: Input) : List Int :=
+  i.lines |> .map (·.toInt?.get!)
+
+def Input.splitOn : (@& Input) → String → List Input
+  | ⟨s⟩, sep => String.splitOn s sep
+    |> List.map .mk
+
+/--
+A number type that models a problem number for a day. 
+Only the litteral 1-25 can be parsed into a number.
+-/
 structure ProblemNumber : Type where
   of ::
   day: Nat 
@@ -91,22 +112,22 @@ def Problem.run (p:  Problem) (i: Input) : IO Unit := do
 
   return ()
 
-def Input.lines : (@& Input) → List String
-  | ⟨s⟩ => String.splitOn s "\n"
+def testPart₁ (expect: Int) (p: Problem) (input: String) : IO Int := do
+  let result := p.part1 (Input.mk input)
+  if result = expect then
+    IO.println "Part1 ✅"
+  else 
+    IO.println "Part1 ❌"
+  return result
 
-def Input.splitOn : (@& Input) → String → List String
-  | ⟨s⟩, sep => String.splitOn s sep
-
-def String.lines : (@& String) → List String
-  | s => String.splitOn s "\n"
-
-def Problem.testPart₁ (p: Problem) (input: String) : Int := 
-  p.part1 (Input.mk input)
-
-def Problem.testPart₂ (p: Problem) (input: String) : Int := 
-  p.part2.map runPart2
-  |> Option.get!
+def testPart₂ (expect: Int) (p: Problem) (input: String) : IO Int := do
+  if result = expect then
+    IO.println "Part2 ✅"
+  else 
+    IO.println "Part2 ❌"
+  return result
   where
     runPart2 (f: Input -> Int) := f (Input.mk input)
+    result := p.part2.map runPart2 |> Option.get!
 
 
