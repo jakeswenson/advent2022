@@ -2,6 +2,7 @@ namespace Days
 
 structure Input := 
   text: String
+  deriving Repr, DecidableEq, Ord
 
 instance : ToString Input where
   toString := (·.text)
