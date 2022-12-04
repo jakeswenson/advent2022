@@ -54,11 +54,13 @@ structure ElfSection where
   start: Nat
   stop: Nat
 
+def ElfSection.contains (self: ElfSection) (other: Nat) : Bool :=
+  if self.start ≤ other ∧ self.stop ≥ other
+  then true
+  else false
+
 def ElfSection.fullyContains (self other: ElfSection) : Bool :=
-  if self.start ≤ other.start 
-      ∧ self.stop ≥ other.start 
-      ∧ self.stop ≥ other.stop 
-      ∧ self.start ≤ other.stop 
+  if self.contains other.start ∧ self.contains other.stop 
   then true
   else false
 
@@ -106,8 +108,7 @@ So, in this example, the number of overlapping assignment pairs is 4.
 In how many assignment pairs do the ranges overlap?
 -/
 def ElfSection.anyOverlap (self other: ElfSection) : Bool :=
-  if self.start ≤ other.start ∧ self.stop ≥ other.start
-    ∨ self.stop ≥ other.stop ∧ self.start ≤ other.stop
+  if self.contains other.start ∨ self.contains other.stop
   then true
   else false
 
