@@ -103,26 +103,29 @@ Priorities for these items must still be found to organize the sticker attachmen
 
 Find the item type that corresponds to the badges of each three-Elf group. What is the sum of the priorities of those item types?
 -/
-structure Group ( α: Type ) where 
+structure ElfGroup ( α: Type ) where 
   memberItems: List α
   deriving Repr
 
-def toGroupsOf₃ (input: Input) : List $ Group Input :=
-  input.lines 
-  |>.enum 
-  |>.groupBy (λ 
-  | (idx, _), (other, _) => idx / 3 == other / 3) 
-  |>.map (·.map Prod.snd)
-  |>.map Group.mk
+def ElfGroup.map {α β : Type} (func: α → β) (elves: ElfGroup α) : ElfGroup β := 
+  elves.memberItems.map func |> ElfGroup.mk 
 
-def groupMembersToItemSet (group: Group Input): Group $ RBSet Char compare :=
-  group.memberItems.map (·.text)
+instance : Functor ElfGroup where
+  map := ElfGroup.map
+
+def toGroupsOf₃ (input: Input) : List $ ElfGroup Input :=
+  input.lines 
+  |> Common.List.windowed 3
+  |>.map ElfGroup.mk
+
+def groupMembersToItemSet (group: ElfGroup Input): ElfGroup $ RBSet Char compare :=
+  group
+  |>.map (·.text)
   |>.map (λ (memberItems: String) => 
     memberItems.foldl (init:=∅) (·.insert)
   )
-  |> Group.mk
 
-def commonItems (group: Group $ RBSet Char compare): RBSet Char compare :=
+def commonItems (group: ElfGroup $ RBSet Char compare): RBSet Char compare :=
   intersectAll
   where
     setInsersect (map map₂: RBSet Char compare) : RBSet Char compare :=
@@ -132,12 +135,11 @@ def commonItems (group: Group $ RBSet Char compare): RBSet Char compare :=
     intersectAll: RBSet Char compare:=
       rest.foldl (init:=first) setInsersect
 
-def groupCommonElement (group: Group Input): Char :=
+def groupCommonElement (group: ElfGroup Input): Char :=
   groupMembersToItemSet group
   |> commonItems
   |>.toList
   |> List.head!
-
 
 def part₂ (input: Input) : Int := 
   input
@@ -163,9 +165,9 @@ def sampleInput := Input.mk sample
 
 #eval sampleInput |> toGroupsOf₃
 #eval sampleInput |> toGroupsOf₃ |>.map groupCommonElement
-#eval Group.mk [⟨"Zk"⟩, ⟨"Z"⟩] |> groupMembersToItemSet
-#eval Group.mk [⟨"Z"⟩, ⟨"Z"⟩] |> groupMembersToItemSet |> commonItems
-#eval Group.mk [⟨"Z"⟩, ⟨"Z"⟩] |> groupCommonElement
+#eval ElfGroup.mk [⟨"Zk"⟩, ⟨"Z"⟩] |> groupMembersToItemSet
+#eval ElfGroup.mk [⟨"Z"⟩, ⟨"Z"⟩] |> groupMembersToItemSet |> commonItems
+#eval ElfGroup.mk [⟨"Z"⟩, ⟨"Z"⟩] |> groupCommonElement
 
 #eval testPart₁ solution sample (expect:=157)
 #eval testPart₂ solution sample (expect:=70)
