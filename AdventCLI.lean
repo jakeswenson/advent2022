@@ -7,7 +7,7 @@ open Days
 def runDayCmd (p : Parsed) : IO UInt32 := do
   let day: ProblemNumber := p.positionalArg! "day" |>.as! Nat |> ProblemNumber.of
 
-  let problem := List.find? (fun (p: Days.Problem) => p.day == day) Advent22.days
+  let problem := List.find? (fun (p: Days.Problem String) => p.day == day) Advent22.days
 
   IO.println s!"Running day: {day}"
   

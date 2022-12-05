@@ -167,7 +167,7 @@ def part₂ (input: Input) : Nat :=
       |> .map scoreRound
       |> sum
 
-def solution : Problem := ⟨ 2, part₁, part₂ ⟩ 
+def solution : Problem Nat := ⟨ 2, part₁, part₂ ⟩ 
 
 def sample := "A Y
 B X

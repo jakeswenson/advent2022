@@ -7,10 +7,10 @@ import Days.Day05
 
 namespace Advent22
 
-def days: List Days.Problem  := [
-  Days.Day01.solution,
-  Days.Day02.solution,
-  Days.Day03.solution,
-  Days.Day04.solution,
+def days: List $ Days.Problem String  := [
+  Days.Day01.solution.wrapString,
+  Days.Day02.solution.wrapString,
+  Days.Day03.solution.wrapString,
+  Days.Day04.solution.wrapString,
   Days.Day05.solution
 ]

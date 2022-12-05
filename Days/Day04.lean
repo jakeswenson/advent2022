@@ -124,7 +124,7 @@ def part₂ (input: Input) : Nat :=
       |>.filter anyOverlaps
       |>.length
 
-def solution : Problem := ⟨ 4, part₁, part₂ ⟩ 
+def solution : Problem Nat := ⟨ 4, part₁, part₂ ⟩ 
 
 def sample := "2-4,6-8
 2-3,4-5

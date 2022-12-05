@@ -7,6 +7,9 @@ structure Input :=
 instance : ToString Input where
   toString := (·.text)
 
+def Input.iter : (@& Input) → String.Iterator
+  | ⟨s⟩ => s.iter
+
 def Input.lines : (@& Input) → List Input
   | ⟨s⟩ => String.splitOn s "\n" 
       |> .map Input.mk
@@ -26,6 +29,9 @@ def Input.natLines (i: Input) : List Nat :=
 def Input.splitOn : (@& Input) → String → List Input
   | ⟨s⟩, sep => String.splitOn s sep
     |> List.map .mk
+
+instance : Inhabited Input where
+  default := ⟨ "" ⟩ 
 
 /--
 A number type that models a problem number for a day. 
@@ -90,11 +96,14 @@ def ProblemNumber.ofNat! (n: Nat) :=
   | some n => n
   | none => panic! s!"Can't parse problem number from '{n}'; it should be between 1 and 25"
 
-structure Problem :=
+structure Problem (α: Type) [ToString α]:=
   define ::
   day: ProblemNumber
-  part1: Input -> Nat 
-  part2: Option $ Input -> Nat
+  part1: Input -> α
+  part2: Option $ Input -> α
+
+def Problem.wrapString (α: Type) [ToString α] (p: Problem α) : Problem String :=
+  Problem.define p.day (toString ∘ p.part1) (p.part2.map (λ p₂ input => p₂ input |> toString))
 
 def Problem.padDay (day: ProblemNumber) : String := 
   if day.day < 10 then s!"0{day.day}" else s!"{day.day}"
@@ -102,7 +111,7 @@ def Problem.padDay (day: ProblemNumber) : String :=
 instance : ToString ProblemNumber where
   toString p := Problem.padDay p
 
-def Problem.run (p:  Problem) (i: Input) : IO Unit := do
+def Problem.run [ToString α] (p: Problem α) (i: Input) : IO Unit := do
   let result₁ := p.part1 i
 
   IO.println "==========================="
@@ -119,7 +128,7 @@ def Problem.run (p:  Problem) (i: Input) : IO Unit := do
 
   return ()
 
-def testPart₁ (expect: Nat) (p: Problem) (input: String) : IO Nat := do
+def testPart₁ [ToString α] [DecidableEq α] (expect: α) (p: Problem α) (input: String) : IO α := do
   let result := p.part1 (Input.mk input)
   if result = expect then
     IO.println "Part1 ✅"
@@ -127,14 +136,19 @@ def testPart₁ (expect: Nat) (p: Problem) (input: String) : IO Nat := do
     IO.println "Part1 ❌"
   return result
 
-def testPart₂ (expect: Nat) (p: Problem) (input: String) : IO Nat := do
-  if result = expect then
-    IO.println "Part2 ✅"
-  else 
-    IO.println "Part2 ❌"
-  return result
+def testPart₂ [ToString α] [DecidableEq α] (expect: α) (p: Problem α) (input: String) : IO α := do
+  match result with
+  | none => 
+      IO.println "Part 2 not done yet"
+      return expect
+  | some result => 
+    if result = expect then
+      IO.println "Part2 ✅"
+    else 
+      IO.println "Part2 ❌"
+    return result
   where
-    runPart2 (f: Input -> Nat) := f (Input.mk input)
-    result := p.part2.map runPart2 |> Option.get!
+    runPart2 (f: Input -> α) := f (Input.mk input)
+    result := p.part2.map runPart2
 
 

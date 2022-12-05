@@ -147,7 +147,7 @@ def part₂ (input: Input) : Nat :=
   |>.map priorityOf
   |> sum
 
-def solution : Problem := ⟨ 3, part₁, part₂ ⟩ 
+def solution : Problem Nat := ⟨ 3, part₁, part₂ ⟩ 
 
 def sample := "vJrwpWtwJgWrhcsFMMfFFhFp
 jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL

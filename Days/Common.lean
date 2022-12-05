@@ -17,4 +17,11 @@ def Function.curry {α β χ : Type} (f: α × β → χ) : (α → β → χ) :
   λ (x: α) => λ (y: β) => f ⟨ x, y ⟩
 
 def Function.uncurry {α β χ : Type} (f: α → β → χ) : (α × β → χ) :=
-  λ (pair: α × β) => f pair.fst pair.snd 
+  λ (pair: α × β) => f pair.fst pair.snd
+
+def Option.orDefault (o: Option α) (defaultValue: α) : α :=
+  match o with
+  | some v => v
+  | none => defaultValue
+
+export Option (orDefault)
