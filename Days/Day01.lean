@@ -8,11 +8,11 @@ open Common
 def elfGroupSeperator := "\n\n"
 
 structure Elf :=
-  carrying: List Int
+  carrying: List Nat 
 
 def Elf.fromInput (input: Input) : List Elf :=
   input.splitOn elfGroupSeperator 
-    |> List.map (·.intLines)
+    |> List.map (·.natLines)
     |> List.map Elf.mk
 
 /--
@@ -53,11 +53,11 @@ In case the Elves get hungry and need extra snacks, they need to know which Elf 
 
 Find the Elf carrying the most Calories. How many total Calories is that Elf carrying?
 -/
-def part₁ (input: Input) : Int := 
+def part₁ (input: Input) : Nat := 
   elfCarryingTheMost.get!
   where 
     elves := Elf.fromInput input 
-    countCarrying (elf : Elf) : Int := sum elf.carrying
+    countCarrying (elf : Elf) : Nat := sum elf.carrying
     elfCarryingTheMost := 
       List.map countCarrying elves
       |> List.maximum?
@@ -71,13 +71,13 @@ In the example above, the top three Elves are the fourth Elf (with 24000 Calorie
 
 Find the top three Elves carrying the most Calories. How many Calories are those Elves carrying in total?
 -/
-def part₂ (input: Input) : Int := 
+def part₂ (input: Input) : Nat := 
   top3Total
   where 
     elves := Elf.fromInput input
-    countCarrying (elf : Elf) : Int := sum elf.carrying
+    countCarrying (elf : Elf) : Nat := sum elf.carrying
 
-    top3Elves : Option $ Int × Int × Int := 
+    top3Elves : Option $ Nat × Nat × Nat := 
       .map countCarrying elves
       |> List.foldl (init := none) (fun 
       | none, elf => (elf, elf, elf)
@@ -91,7 +91,7 @@ def part₂ (input: Input) : Int :=
     top3Total := 
       if let some (top₁, top₂, top₃) := top3Elves then 
         top₁ + top₂ + top₃
-      else -1
+      else 0
 
 def solution := Problem.define 1 part₁ part₂
 

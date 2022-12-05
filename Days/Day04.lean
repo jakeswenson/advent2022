@@ -85,14 +85,14 @@ def allElfPairs (input: Input) : List $ ElfSection × ElfSection :=
   )
   |>.filterMap id
 
-def part₁ (input: Input) : Int := 
+def part₁ (input: Input) : Nat := 
   totalOverlaps
   where
+    fullyOverlaps := Function.uncurry (ElfSection.eitherFullyOverlaps · ·)
     totalOverlaps := 
       allElfPairs input
-      |>.filter (λ pair => pair.fst.eitherFullyOverlaps pair.snd)
+      |>.filter fullyOverlaps
       |>.length
-      |> Int.ofNat
 
 /--
 It seems like there is still quite a bit of duplicate work planned. Instead, the Elves would like to know the number of pairs that overlap at all.
@@ -115,14 +115,14 @@ def ElfSection.anyOverlap (self other: ElfSection) : Bool :=
 def ElfSection.eitherOverlaps (self other: ElfSection) : Bool :=
   self.anyOverlap other ∨ other.anyOverlap self 
 
-def part₂ (input: Input) : Int :=
+def part₂ (input: Input) : Nat :=
    totalOverlaps
   where
+    anyOverlaps := Function.uncurry (ElfSection.eitherOverlaps · ·)
     totalOverlaps := 
       allElfPairs input
-      |>.filter (λ pair => pair.fst.eitherOverlaps pair.snd)
+      |>.filter anyOverlaps
       |>.length
-      |> Int.ofNat
 
 def solution : Problem := ⟨ 4, part₁, part₂ ⟩ 
 
@@ -137,3 +137,4 @@ def sampleInput := Input.mk sample
 
 #eval testPart₁ solution sample (expect:=2)
 #eval testPart₂ solution sample (expect:=4)
+

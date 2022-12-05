@@ -69,13 +69,12 @@ In the above example, the priority of the item type that appears in both compart
 
 Find the item type that appears in both compartments of each rucksack. What is the sum of the priorities of those item types?
 -/
-def part₁ (input: Input) : Int := 
+def part₁ (input: Input) : Nat := 
   sum duplicateItemPriorities
-  |> Int.ofNat
   where
     duplicateItemPriorities := 
       duplicates input
-      |>.map (·.get!)
+      |>.filterMap id
       |>.map priorityOf
 
 /--
@@ -141,13 +140,12 @@ def groupCommonElement (group: ElfGroup Input): Char :=
   |>.toList
   |> List.head!
 
-def part₂ (input: Input) : Int := 
+def part₂ (input: Input) : Nat := 
   input
   |> toGroupsOf₃
   |>.map groupCommonElement
   |>.map priorityOf
   |> sum
-  |> Int.ofNat
 
 def solution : Problem := ⟨ 3, part₁, part₂ ⟩ 
 

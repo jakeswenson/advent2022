@@ -14,8 +14,14 @@ def Input.lines : (@& Input) → List Input
 def Input.toInt? : (@& Input) → Option Int
   | ⟨s⟩ => s.toInt?
 
+def Input.toNat? : (@& Input) → Option Nat
+  | ⟨s⟩ => s.toNat?
+
 def Input.intLines (i: Input) : List Int :=
-  i.lines |> .map (·.toInt?.get!)
+  i.lines |>.map (·.toInt?.get!)
+
+def Input.natLines (i: Input) : List Nat :=
+  i.lines |>.map (·.toNat?) |>.filterMap id
 
 def Input.splitOn : (@& Input) → String → List Input
   | ⟨s⟩, sep => String.splitOn s sep
@@ -87,8 +93,8 @@ def ProblemNumber.ofNat! (n: Nat) :=
 structure Problem :=
   define ::
   day: ProblemNumber
-  part1: Input -> Int
-  part2: Option $ Input -> Int
+  part1: Input -> Nat 
+  part2: Option $ Input -> Nat
 
 def Problem.padDay (day: ProblemNumber) : String := 
   if day.day < 10 then s!"0{day.day}" else s!"{day.day}"
@@ -113,7 +119,7 @@ def Problem.run (p:  Problem) (i: Input) : IO Unit := do
 
   return ()
 
-def testPart₁ (expect: Int) (p: Problem) (input: String) : IO Int := do
+def testPart₁ (expect: Nat) (p: Problem) (input: String) : IO Nat := do
   let result := p.part1 (Input.mk input)
   if result = expect then
     IO.println "Part1 ✅"
@@ -121,14 +127,14 @@ def testPart₁ (expect: Int) (p: Problem) (input: String) : IO Int := do
     IO.println "Part1 ❌"
   return result
 
-def testPart₂ (expect: Int) (p: Problem) (input: String) : IO Int := do
+def testPart₂ (expect: Nat) (p: Problem) (input: String) : IO Nat := do
   if result = expect then
     IO.println "Part2 ✅"
   else 
     IO.println "Part2 ❌"
   return result
   where
-    runPart2 (f: Input -> Int) := f (Input.mk input)
+    runPart2 (f: Input -> Nat) := f (Input.mk input)
     result := p.part2.map runPart2 |> Option.get!
 
 
