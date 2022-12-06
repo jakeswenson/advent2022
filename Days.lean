@@ -150,5 +150,3 @@ def testPart₂ [ToString α] [DecidableEq α] (expect: α) (p: Problem α) (inp
   where
     runPart2 (f: Input -> α) := f (Input.mk input)
     result := p.part2.map runPart2
-
-
