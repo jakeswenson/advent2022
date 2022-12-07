@@ -134,15 +134,15 @@ def Problem.run [ToString α] (p: Problem α) (i: Input) : IO Unit := do
 
   return ()
 
-def testPart₁ [ToString α] [DecidableEq α] (expect: α) (p: Problem α) (input: String) : IO α := do
-  let result := p.part1 (Input.mk input)
+def testPart₁ [ToInput κ] [ToString α] [DecidableEq α] (expect: α) (p: Problem α) (input: κ) : IO α := do
+  let result := p.part1 <| toInput input
   if result = expect then
     IO.println "Part1 ✅"
   else 
     IO.println "Part1 ❌"
   return result
 
-def testPart₂ [ToString α] [DecidableEq α] (expect: α) (p: Problem α) (input: String) : IO α := do
+def testPart₂ [ToInput κ] [ToString α] [DecidableEq α] (expect: α) (p: Problem α) (input: κ) : IO α := do
   match result with
   | none => 
       IO.println "Part 2 not done yet"
@@ -154,5 +154,5 @@ def testPart₂ [ToString α] [DecidableEq α] (expect: α) (p: Problem α) (inp
       IO.println "Part2 ❌"
     return result
   where
-    runPart2 (f: Input -> α) := f (Input.mk input)
+    runPart2 (f: Input -> α) := f (toInput input)
     result := p.part2.map runPart2
