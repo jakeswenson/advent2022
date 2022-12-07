@@ -112,8 +112,6 @@ def solution : Problem Nat := ⟨ day, part₁, part₂ ⟩
 
 def sample := "mjqjpqmgbljsphdztnvjfqwrcgsmlb"
 
-def sampleInput := Input.mk sample
-
 #eval testPart₁ solution sample (expect:=7)
 #eval testPart₂ solution sample (expect:=19)
 

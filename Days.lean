@@ -33,6 +33,17 @@ def Input.splitOn : (@& Input) → String → List Input
 instance : Inhabited Input where
   default := ⟨ "" ⟩ 
 
+class ToInput (α : Type u) where
+  toInput : α → Input
+
+export ToInput (toInput)
+
+instance : ToInput String where
+  toInput := Input.mk
+
+instance : ToInput Input where
+  toInput := id
+
 /--
 A number type that models a problem number for a day. 
 Only the litteral 1-25 can be parsed into a number.
@@ -40,10 +51,13 @@ Only the litteral 1-25 can be parsed into a number.
 structure ProblemNumber : Type where
   of ::
   day: Nat 
-  deriving Repr, Ord, DecidableEq
+  deriving Repr, Ord, DecidableEq, BEq
 
 instance : Inhabited ProblemNumber where
   default := ProblemNumber.of 1
+
+instance : LT ProblemNumber := ltOfOrd
+instance : LE ProblemNumber := leOfOrd
 
 example : ProblemNumber := .of 1
 
@@ -74,14 +88,6 @@ instance : OfNat ProblemNumber 22 where ofNat := .of 22
 instance : OfNat ProblemNumber 23 where ofNat := .of 23
 instance : OfNat ProblemNumber 24 where ofNat := .of 24
 instance : OfNat ProblemNumber 25 where ofNat := .of 25
-
-instance : LT ProblemNumber where
-  lt 
-  | p₁, p₂ => p₁.day < p₂.day
-
-instance : LE ProblemNumber where
-  le
-  | p₁, p₂ => p₁.day ≤ p₂.day
 
 def ProblemNumber.ofNat? (n: Nat) :=
   match n with

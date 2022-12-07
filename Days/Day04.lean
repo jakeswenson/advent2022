@@ -133,8 +133,6 @@ def sample := "2-4,6-8
 6-6,4-6
 2-6,4-8"
 
-def sampleInput := Input.mk sample
-
 #eval testPart₁ solution sample (expect:=2)
 #eval testPart₂ solution sample (expect:=4)
 
