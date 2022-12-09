@@ -7,6 +7,7 @@ import Days.Day05
 import Days.Day06
 import Days.Day07
 import Days.Day08
+import Days.Day09
 
 namespace Advent22
 
@@ -18,5 +19,6 @@ def days: List $ Days.Problem String  := [
   Days.Day05.solution,
   Days.Day06.solution.wrapString,
   Days.Day07.solution.wrapString,
-  Days.Day08.solution.wrapString
+  Days.Day08.solution.wrapString,
+  Days.Day09.solution.wrapString
 ]

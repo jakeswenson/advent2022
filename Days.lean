@@ -1,3 +1,4 @@
+import Std
 namespace Days
 
 structure Input := 
@@ -13,6 +14,9 @@ def Input.iter : (@& Input) → String.Iterator
 def Input.lines : (@& Input) → List Input
   | ⟨s⟩ => String.splitOn s "\n" 
       |> .map Input.mk
+
+def Input.trim : (@& Input) → Input
+  | ⟨s⟩ => s.trim |> Input.mk
 
 def Input.toInt? : (@& Input) → Option Int
   | ⟨s⟩ => s.toInt?
