@@ -161,45 +161,61 @@ def adjustTailKnots (rope: Rope): Rope :=
         (newPos, tail.push newPos))
       |>.snd
 
-/-
+/--
+Sample
+```
 ...H.. (3,4)
 ....T. (4,3)
 ......
 ......
 s.....
-
+```
+```
 ..HT.. (2,4)(3,4)
 ......
 ......
 ......
 s.....
+```
 -/
+theorem adjust_test1 : adjustKnot (.mk 2 4) (.mk 4 3) = (.mk 3 4) := by rfl
+
 #eval Rope.mk (.mk 3 4) #[.mk 4 3] |> Rope.print
 
 #eval adjustKnot (.mk 2 4) (.mk 4 3)
+
 #eval adjustTailKnots { head := .mk 2 4, tail := #[.mk 4 3] }
 
 #eval Rope.print <| adjustTailKnots { head := .mk 2 4, tail := #[.mk 4 3] }
 
-/-
+/--
+```
 ..T...(2,4)
 ...H..(3,3)
 ......
 ......
 s.....
-
+```
+```
 ......
 ...TH.(3,3)(4,3)
 ......
 ......
 s.....
-
+```
+```
 ......
 ....TH(4,3),(5,3)
 ......
 ......
 s.....
+```
 -/
+theorem adjust_test2 : 
+  adjustTailKnots { head := .mk 5 3, tail := #[.mk 3 4] }
+  = { head := .mk 5 3, tail := #[.mk 4 3] }
+  := by rfl
+
 #eval adjustTailKnots { head := .mk 3 3, tail := #[.mk 2 4] }
 #eval adjustTailKnots { head := .mk 5 3, tail := #[.mk 3 4] }
 
