@@ -112,7 +112,7 @@ structure Problem (α: Type) [ToString α]:=
   part1: Input -> α
   part2: Option $ Input -> α
 
-def Problem.wrapString (α: Type) [ToString α] (p: Problem α) : Problem String :=
+def Problem.wrapString {α: Type} [ToString α] (p: Problem α) : Problem String :=
   Problem.define p.day (toString ∘ p.part1) (p.part2.map (λ p₂ input => p₂ input |> toString))
 
 def Problem.padDay (day: ProblemNumber) : String := 
