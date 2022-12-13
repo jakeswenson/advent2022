@@ -114,7 +114,7 @@ instance : Functor ElfGroup where
 
 def toGroupsOf₃ (input: Input) : List $ ElfGroup Input :=
   input.lines 
-  |> Common.List.windowed 3
+  |> List.windowed 3
   |>.map ElfGroup.mk
 
 def groupMembersToItemSet (group: ElfGroup Input): ElfGroup $ RBSet Char compare :=

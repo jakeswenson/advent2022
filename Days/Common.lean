@@ -1,9 +1,9 @@
-namespace Days.Common
+namespace List
 
-def sum [Add α] [Inhabited α] (items: List α) : α :=
-  List.foldl (init:=default) (·+·) items
+def sum [Add α] [Inhabited α]: List α → α := List.foldl (init:=default) (·+·)
+def mul [Mul α] (default: α) : List α → α := List.foldl (init:=default) (·*·)
 
-def List.windowed {α : Type} (size: Nat) (items: List α) : List $ List α :=
+def windowed {α : Type} (size: Nat) (items: List α) : List $ List α :=
   items
   |>.enum
   |>.groupBy (λ 
@@ -11,7 +11,38 @@ def List.windowed {α : Type} (size: Nat) (items: List α) : List $ List α :=
   )
   |>.map (List.map (·.snd))
 
-export List (windowed)
+end List
+
+namespace Array
+
+def last {α: Type} (array: Array α) (arrayHasItems: array.size - 1 < array.size := by decide): α :=
+  let index: Fin array.size := Fin.mk (array.size - 1) arrayHasItems
+  array.get index
+
+def lastD {α: Type} (array: Array α) (default: α): α :=
+  array.getD (array.size - 1) default
+
+def lastN {α: Type} (array: Array α) (n: Nat): Subarray α :=
+  array[array.size - n:]
+
+end Array
+
+namespace Std
+
+def Std.Range.foldl {α: Type} (f: α → Nat → α) (init: α) (range: Std.Range) : α := 
+  let (_, state) := StateT.run m init
+  state
+  where 
+    m: StateM α Unit := do
+      for r in range do
+        set $ f (← get) r
+
+end Std
+
+namespace Days.Common
+
+export List (sum mul windowed)
+export Array (last lastD lastN)
 
 def Function.curry {α β χ : Type} (f: α × β → χ) : (α → β → χ) :=
   λ (x: α) => λ (y: β) => f ⟨ x, y ⟩
